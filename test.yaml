@@ -1,20 +1,15 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: test-deployment
+  name: test-pod
   labels:
     app: foo
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: foo
-  template:
-    metadata:
-      labels:
-        app: foo
-    spec:
-      containers:
-      - name: foo
-        image: localhost:30007/wibble
-        command: ["/bin/sh", "-c", "sleep 10000"]
+  containers:
+    - name: foo
+      image: localhost:30007/mssql-2017:latest
+      env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: Peruzzi1
