@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pod
+  name: docker-build
 spec:
   template:
     metadata:
@@ -9,7 +9,7 @@ spec:
         app: docker
     spec:
       containers:
-        - name: dind
+        - name: docker-daemon
           image: docker:20-dind
           securityContext:
             privileged: true
@@ -23,9 +23,9 @@ spec:
           env:
           - name: DOCKER_TLS_CERTDIR
             value: /certs
-        - name: my-main-container
+        - name: docker
           image: docker:20
-          command: ["/bin/sh", "-c", "sleep 10000"]
+          command: ["/bin/sh", "-c", "sleep 5 && docker build -t registry.default/mssql-2017:latest /files && docker push registry.default/mssql-2017:latest"]
           env:
           - name: DOCKER_HOST
             value: tcp://localhost:2376
@@ -40,6 +40,8 @@ spec:
               mountPath: /certs
             - name: registry-cert
               mountPath: /etc/docker/certs.d/registry.default
+            - name: files
+              mountPath: /files
       restartPolicy: Never
       volumes:
       - name: dind-storage
@@ -49,3 +51,7 @@ spec:
       - name: registry-cert
         persistentVolumeClaim:
           claimName: registry-cert
+      - name: files
+        configMap:
+          name: config
+          defaultMode: 0777
