@@ -8,6 +8,13 @@ spec:
       labels:
         app: docker
     spec:
+      initContainers:
+        - name: create-lockfile
+          image: busybox
+          command: ['sh', '-c', 'touch /liveness/job.live']
+          volumeMounts:
+            - name: liveness
+              mountPath: /liveness
       containers:
         - name: docker-daemon
           image: docker:20-dind
@@ -20,12 +27,19 @@ spec:
               mountPath: /certs
             - name: registry-cert
               mountPath: /etc/docker/certs.d/registry.default
+            - name: liveness
+              mountPath: /liveness
           env:
           - name: DOCKER_TLS_CERTDIR
             value: /certs
+          livenessProbe:
+            exec:
+              command:
+                - stat 
+                - /liveness/job.live
         - name: docker
           image: docker:20
-          command: ["/bin/sh", "-c", "sleep 5 && docker build -t registry.default/mssql-2017:latest /files && docker push registry.default/mssql-2017:latest"]
+          command: ["/bin/sh", "-c", "sleep 5 && docker build -t registry.default/mssql-2017:latest /files && docker push registry.default/mssql-2017:latest && rm /liveness/job.live"]
           env:
           - name: DOCKER_HOST
             value: tcp://localhost:2376
@@ -42,11 +56,15 @@ spec:
               mountPath: /etc/docker/certs.d/registry.default
             - name: files
               mountPath: /files
+            - name: liveness
+              mountPath: /liveness
       restartPolicy: Never
       volumes:
       - name: dind-storage
         emptyDir: {}
       - name: dind-certs
+        emptyDir: {}
+      - name: liveness
         emptyDir: {}
       - name: registry-cert
         persistentVolumeClaim:
