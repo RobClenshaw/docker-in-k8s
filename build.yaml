@@ -3,7 +3,6 @@ kind: Job
 metadata:
   name: docker-build
 spec:
-  ttlSecondsAfterFinished: 60
   template:
     metadata:
       labels:
