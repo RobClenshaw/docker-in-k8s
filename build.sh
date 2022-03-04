@@ -35,11 +35,10 @@ do
 done
 printf "\r\033[K"
 kubectl apply -f configmap.yaml
-kubectl port-forward service/registry 30007:443 &
-PORTFORWARD_PID=$!
+(kubectl port-forward service/registry 30007:443 &) > /dev/null
 sleep 1
-echo "curling https://localhost:30007/v2/_catalog"
-curl https://localhost:30007/v2/_catalog -k
+echo "\ncurling https://localhost:30007/v2/_catalog"
+printf "\e[1;32m$(curl https://localhost:30007/v2/_catalog -k -s)\e[0m\n\n"
 kubectl apply -f build.yaml
 echo "waiting for job to finish"
 while [ $(kubectl get job/docker-build -o json | jq '.status.succeeded') != "1" ]
@@ -50,6 +49,6 @@ do
     sleep $delay
 done
 printf "\r\033[K"
-echo "curling https://localhost:30007/v2/_catalog"
-curl https://localhost:30007/v2/_catalog -k
-kill $PORTFORWARD_PID
+echo "\ncurling https://localhost:30007/v2/_catalog"
+printf "\e[1;32m$(curl https://localhost:30007/v2/_catalog -k -s)\e[0m\n\n"
+ps -ef | grep -i port-forward | grep -v grep | awk {'print $2'} | xargs kill
