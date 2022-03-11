@@ -39,7 +39,7 @@ spec:
                 - /liveness/job.live
         - name: docker
           image: docker:20
-          command: ["/bin/sh", "-c", "sleep 5 && docker build -t registry.default/mssql-2017:latest /files && docker push registry.default/mssql-2017:latest && rm /liveness/job.live"]
+          command: ["/bin/sh", "-c", "sleep 5 && docker build -t registry.default/helloworld:latest /files && docker push registry.default/helloworld:latest && rm /liveness/job.live"]
           env:
           - name: DOCKER_HOST
             value: tcp://localhost:2376
@@ -71,5 +71,5 @@ spec:
           claimName: registry-cert
       - name: files
         configMap:
-          name: config
+          name: my-config
           defaultMode: 0777

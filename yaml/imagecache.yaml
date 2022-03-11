@@ -1,0 +1,17 @@
+apiVersion: kubefledged.io/v1alpha2
+kind: ImageCache
+metadata:
+  name: imagecache1
+  labels:
+    app: kubefledged
+    kubefledged: imagecache
+spec:
+  cacheSpec:
+  - images:
+    - golang:1.17-alpine
+    - docker:20
+    - docker:20-dind
+    - registry
+    - alpine/openssl
+    - busybox
+    - library/golang
