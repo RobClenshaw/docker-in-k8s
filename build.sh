@@ -34,6 +34,7 @@ do
     sleep $delay
 done
 printf "\r\033[K"
+kubectl create configmap my-config --from-file=helloworld -o yaml --dry-run > configmap.yaml
 kubectl apply -f configmap.yaml
 (kubectl port-forward service/registry 30007:443 &) > /dev/null
 sleep 1
