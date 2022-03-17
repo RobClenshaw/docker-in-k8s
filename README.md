@@ -9,8 +9,12 @@ How to...
 ## You will need
 
 * [minikube](https://minikube.sigs.k8s.io/docs/)
+
+As the scripts come, you will need to install...
 * [Helm](https://helm.sh/)
 * [GnuPG](https://gnupg.org/)
+
+...but they are only to preload container images to speed up the demo. You can comment out a section in `scripts/build-cluster.sh` if you don't need this and then technically you won't need Helm or GnuPG either.
 
 ## Caveats
 
