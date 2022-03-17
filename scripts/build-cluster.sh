@@ -10,6 +10,8 @@ fi
 
 minikube start --profile test
 
+# The below is to preload the container images used for the purposes of speeding up the demonstration.
+# If you don't need this then comment everything out and you won't need to install Helm or GnuPG.
 export KUBEFLEDGED_NAMESPACE=kube-fledged
 kubectl create namespace ${KUBEFLEDGED_NAMESPACE}
 helm repo add kubefledged-charts https://senthilrch.github.io/kubefledged-charts/
